@@ -9,13 +9,15 @@ instructions = list(map(_parse, file.readlines()))
 
 depth = 0
 distance = 0
+aim = 0
 
 for direction, length in instructions:
     if direction == "forward":
         distance += length
+        depth += length * aim
     elif direction == "up":
-        depth -= length
+        aim -= length
     else:
-        depth += length
+        aim += length
 
 print(depth * distance)
