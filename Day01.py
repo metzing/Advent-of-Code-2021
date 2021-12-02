@@ -7,8 +7,8 @@ increases = 0
 
 depths = list(map(_parse, file.readlines()))
 
-for index in range(1, len(depths)):
-    last = depths[index - 1]
+for index in range(3, len(depths)):
+    last = depths[index - 3]
     current = depths[index]
 
     if (last < current):
