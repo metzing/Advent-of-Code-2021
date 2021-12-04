@@ -27,6 +27,7 @@ class Board:
         
     def __init__(self, numbers : list):
         self.__fields = list(map(lambda row: list(map(Field, row)), numbers))
+        self.__announced = False
 
     @property
     def fields(self):
@@ -66,6 +67,12 @@ class Board:
         for i in range(0, 5):
             print(f'[{self.__fields[i]}]')
 
+    def announceWin(self, value : int):
+        if not self.__announced:
+            print(value)
+            self.__announced = True
+
+
 file = open("Day04.txt", "r")
 
 draws = list(map(int, file.readline().split(",")))
@@ -83,21 +90,13 @@ while (line := file.readline()):
         boards.append(Board(buildingRows))
         buildingRows = []
 
-won = False
-drawIndex = 0
-
-while not won:
-
-    drawn = draws[drawIndex]
+for drawn in draws:
 
     for board in boards:
         
         board.mark(drawn)
 
         if board.isWinner():
-            won = True
             unmarkedSum = board.sumUnmarkedNumbers()
-            print(unmarkedSum * drawn)
-
-    drawIndex += 1
+            board.announceWin(unmarkedSum * drawn)
 
