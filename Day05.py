@@ -1,11 +1,3 @@
-def between(start : int, end : int):
-    if (start < end):
-        return range(start, end + 1)
-    elif (start > end):
-        return range(start, end - 1, -1)
-    else:
-        return [start]
-
 class Vent:
 
     def __init__(self, x1, y1, x2, y2):
@@ -29,14 +21,26 @@ class Vent:
     @property
     def y2(self) -> int:
         return self.__y2
+    
+    def yieldPoints(self):
+        x = self.x1
+        y = self.y1
 
-    @property
-    def isVertical(self) -> bool:
-        return self.y1 == self.y2
+        yield x, y
 
-    @property
-    def isHorizontal(self) -> bool:
-        return self.x1 == self.x2
+        while x != self.x2 or y != self.y2:
+            
+            if x < self.x2:
+                x += 1
+            elif x > self.x2:
+                x -= 1
+
+            if y < self.y2:
+                y += 1
+            elif y > self.y2:
+                y -= 1
+
+            yield x, y
 
     def parse(line : str):
         split = line.split(" -> ")
@@ -45,21 +49,15 @@ class Vent:
 
         return Vent(int(start[0]), int(start[1]), int(end[0]), int(end[1]))
 
-
 class Map:
 
     def __init__(self) -> None:
         self.__fields = {}
         self.__dangerousFieldsCount = 0
     
-    def addvent(self, vent : Vent):
-        if vent.isHorizontal:
-            for y in between(vent.y1, vent.y2):
-                self.add(vent.x1, y)
-        
-        if vent.isVertical:
-            for x in between(vent.x1, vent.x2):
-                self.add(x, vent.y1)
+    def addVent(self, vent : Vent):
+        for x, y in vent.yieldPoints():
+            self.add(x, y)
     
     def add(self, x : int, y : int):
         if not x in self.__fields.keys():
@@ -83,6 +81,6 @@ map = Map()
 
 for line in file.readlines():
     vent = Vent.parse(line)
-    map.addvent(vent)
+    map.addVent(vent)
 
 print(map.dangerousFieldsCount)
