@@ -2,12 +2,25 @@ file = open("Day06.txt", "r")
 
 fish = list(map(int, file.readline().split(",")))
 
-for i in range(0, 80):
-    for index, days in enumerate(fish):
-        if days == 0:
-            fish.append(9)
-            fish[index] = 6
-        else:
-            fish[index] = days - 1
+fishbyday = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 
-print(len(fish))
+for f in fish:
+    fishbyday[f] += 1
+
+for days in range(0, 256):
+    
+    spawning = fishbyday[0]
+
+    for i in range(1, 9):
+        fishbyday[i - 1] = fishbyday[i]
+
+    fishbyday[6] += spawning
+
+    fishbyday[8] = spawning
+
+sum = 0
+
+for f in fishbyday:
+    sum += f
+
+print(sum)
