@@ -2,11 +2,10 @@ file = open("Day07.txt", "r")
 
 positions = sorted(list(map(int, file.readline().split(","))))
 
-median = positions[int(len(positions) / 2)]
+mean = round(sum(positions) / len(positions))
 
-fuelSpent = 0
-
-for position in positions:
-    fuelSpent += abs(position - median)
-
-print(fuelSpent)
+for i in range(mean - 1, mean + 2):
+    fuelSpent = 0
+    for position in positions:
+        fuelSpent += sum(range(abs(position - i + 1) + 1))
+    print(fuelSpent)
