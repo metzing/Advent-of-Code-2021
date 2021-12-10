@@ -1,8 +1,8 @@
 pointValueByClosing = {
-    ")" : 3,
-    "]" : 57,
-    "}" : 1197,
-    ">" : 25137,
+    ")" : 1,
+    "]" : 2,
+    "}" : 3,
+    ">" : 4,
 }
 
 corresponding = {
@@ -12,11 +12,13 @@ corresponding = {
     "<" : ">",
 }
 
-stack = []
-points = 0
+points = []
 
 for line in open("Day10.txt", "r").readlines():
-    
+
+    corrupted = False
+    stack = []
+
     for char in line.strip():
 
         if char in corresponding.keys():
@@ -26,7 +28,19 @@ for line in open("Day10.txt", "r").readlines():
             last = stack.pop()
 
             if char != corresponding[last]:
-                points += pointValueByClosing[char]
+                corrupted = True
                 break
+    
+    if (not corrupted):
 
-print(points)
+        score = 0
+
+        missingClosingChars = [corresponding[item] for item in reversed(stack)]
+
+        for char in missingClosingChars:
+            score = score * 5 + pointValueByClosing[char]
+
+        points.append(score)
+
+
+print(sorted(points)[int(len(points) / 2)])
