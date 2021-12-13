@@ -1,3 +1,6 @@
+from os import truncate
+
+
 caves = {}
 
 class Cave:
@@ -22,6 +25,12 @@ class Cave:
     def connections(self) -> list:
         return self.__connections
     
+    def __str__(self) -> str:
+        return self.name
+
+    def __repr__(self) -> str:
+        return self.name
+
 class Path:
 
     def __init__(self, copy = None, next = None) -> None:
@@ -38,11 +47,22 @@ class Path:
 
     def continueable(self, candidate : Cave) -> bool:
         
-        return (candidate not in self.__caves or candidate.islarge) and \
-            candidate.name in self.__caves[-1].connections
+        if candidate.name not in self.__caves[-1].connections or candidate.name == "start":
+            return False
+
+        if candidate.name == "end" or candidate.islarge:
+            return True
+        
+        smallCavesVisited = [cave.name for cave in self.__caves if cave.issmall]
+        hasSmallDuplicate = len(smallCavesVisited) != len(set(smallCavesVisited))
+
+        return candidate.name not in smallCavesVisited or not hasSmallDuplicate
 
     def __str__(self) -> str:
         return f"[{', '.join(c.name for c in self.__caves)}]"
+
+    def __repr__(self) -> str:
+        return self.__str__()
 
 for line in open("Day12.txt", "r").readlines():
 
@@ -91,4 +111,4 @@ while True:
     
     print()
 
-print(len([path for path in finished if any(cave for cave in path.caves if cave.issmall)]))
+print(len(finished))
