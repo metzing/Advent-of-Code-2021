@@ -69,10 +69,7 @@ while line := file.readline().strip():
     fold = line.split("=")
     folds.append((fold[0], int(fold[1])))
 
+for fold in folds:
+    paper = paper.fold(fold[0], fold[1])
+
 paper.print()
-
-paper = paper.fold(folds[0][0], folds[0][1])
-
-paper.print()
-
-print(paper.numberOfPoints)
