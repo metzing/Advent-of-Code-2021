@@ -74,8 +74,12 @@ def printTable():
                 print(Fore.WHITE + str(octopus.lightlevel), end="")
         print("")
     print("")
-        
-for _ in range(100):
+
+cycles = 0
+
+while True:
+
+    cycles += 1
 
     for line in octupi:
         for octopus in line:
@@ -90,7 +94,6 @@ for _ in range(100):
                 if isInTable(current.x + i, current.y + j) and not (i == 0 and j == 0):
                     octupi[current.x + i][current.y + j].increaseLightLevel()
 
-
     for line in octupi:
         for octopus in line:
 
@@ -98,4 +101,9 @@ for _ in range(100):
 
     printTable()
 
-print(sum([sum([a.numberOfFlashes for a in l]) for l in octupi]))
+    numberOfFlashes = sum([len([a for a in l if a.flashed]) for l in octupi])
+
+    if numberOfFlashes == tableWidth * tableHeight:
+        break
+
+print(cycles)
