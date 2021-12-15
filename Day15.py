@@ -33,6 +33,10 @@ class Square:
     def reach(self):
         return self.__reach
 
+    @property
+    def level(self):
+        return self.__level
+
 for line in open("Day15.txt", "r").readlines():
     
     tableWidth = 0
@@ -43,6 +47,33 @@ for line in open("Day15.txt", "r").readlines():
         tableWidth += 1
     
     tableHeight += 1
+
+originalTableHeight = tableHeight
+originalTableWidth = tableWidth
+
+for i in range(0, 5):
+    for j in range(0, 5):
+        if i == 0 and j == 0:
+            continue
+
+        if j == 0:
+            for _ in range(originalTableHeight):
+                squares.append([])
+
+        def mapValue(x, y):
+            value = squares[x][y].level + i + j
+
+            while value > 9:
+                value -= 9
+
+            return value 
+
+        for k in range(originalTableHeight):
+            for l in range(originalTableWidth):
+                squares[i * originalTableHeight + k].append(Square(i * originalTableHeight + k, j * originalTableWidth + l, mapValue(k, l)))
+
+tableHeight = tableHeight * 5
+tableWidth = tableWidth * 5
 
 def isInTable(x : int, y : int) -> bool:
     return 0 <= x and x < tableHeight and 0 <= y and y < tableWidth
