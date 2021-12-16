@@ -1,3 +1,5 @@
+from functools import reduce
+
 class ValuePacket:
     def __init__(self, version, value) -> None:
         self.__version = version
@@ -24,6 +26,26 @@ class OperatorPacket:
     @property
     def children(self):
         return self.__children
+
+    @property
+    def value(self):
+        childvalues = [child.value for child in self.children]
+
+        match self.__typeid:
+            case 0:
+                return reduce(lambda aggr, item: aggr + item, childvalues, 0)
+            case 1:
+                return reduce(lambda aggr, item: aggr * item, childvalues, 1)
+            case 2:
+                return min(childvalues)
+            case 3:
+                return max(childvalues)
+            case 5:
+                return 1 if childvalues[0] > childvalues[1] else 0
+            case 6:
+                return 1 if childvalues[0] < childvalues[1] else 0
+            case 7:
+                return 1 if childvalues[0] == childvalues[1] else 0 
 
 def parseValuePacket(version, tail):
 
@@ -103,10 +125,4 @@ for hex in hexes:
 
 root, tail = parse(bits)
 
-def sumVersions(root):
-    if isinstance(root, ValuePacket):
-        return root.version
-    else:
-        return root.version + sum(sumVersions(child) for child in root.children)
-
-print(sumVersions(root))
+print(root.value)
