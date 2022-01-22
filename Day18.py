@@ -1,4 +1,5 @@
 from functools import reduce
+from itertools import permutations
 import math
 
 class Pair:
@@ -143,8 +144,7 @@ def replace(original, replacement):
 
 numbers = []
 
-for line in open("Day18.txt", "r").readlines():
-
+def parse(line):
     stack = []
 
     for char in line.strip():
@@ -162,10 +162,13 @@ for line in open("Day18.txt", "r").readlines():
     
     root = stack.pop()
     root.parent = None
-    numbers.append(root)
 
-accumulate = numbers[0]
-numbers = numbers[1:]
+    return root
+
+for line in open("Day18.txt", "r").readlines():
+    root = parse(line)
+    
+    numbers.append(root)
 
 def reduce(root):
 
@@ -178,7 +181,6 @@ def reducedepth(node, depth=None):
     if isinstance(node, Pair):
         if depth > 3 and not (isinstance(node.left, Pair) or isinstance(node.right, Pair)):
             node.explode()
-            print(f"exploded {accumulate}")
             return True
         else:
             return reducedepth(node.left, depth + 1) or reducedepth(node.right, depth + 1)
@@ -189,24 +191,21 @@ def reducelarge(node):
     if isinstance(node, Regular):
         if node.value > 9:
             node.split()
-            print(f"split {accumulate}")
             return True
         else:
             return False
     else:
         return reducelarge(node.left) or reducelarge(node.right)
 
-for number in numbers:
-    print(f"adding {accumulate} and {number}")
-    parent = Pair(accumulate, number)
-    accumulate = parent
+magnitudes = []
 
-    counter = 0
+for left, right in permutations(numbers, 2):
+    p = parse(f"[{left},{right}]")
+
     while True:
-        if not reduce(accumulate):
+        if not reduce(p):
             break
-        counter += 1
     
-    print(accumulate)
+    magnitudes.append(p.magnitude)
 
-print(accumulate.magnitude)
+print(max(magnitudes))
